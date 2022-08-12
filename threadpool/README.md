@@ -7,17 +7,13 @@
 
 ## Install
 
-- Create a folder `build`
-- cd into fold an run:
-
 ```
-cmake ..
-cmake --build .
+cmake -Build
 ```
 
 ## Run Tests
 
-- In the `build` folder run:
+- cd into the generated build folder and run:
 
 ```
 ctest

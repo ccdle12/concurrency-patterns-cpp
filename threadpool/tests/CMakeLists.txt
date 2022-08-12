@@ -11,7 +11,7 @@ add_executable(
 # test.
 target_link_libraries(
     bin_test
-    threadpool # binary from /src/threadpool module
+    ThreadPool::threadpool
     GTest::gtest_main
 )
 
