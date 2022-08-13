@@ -7,8 +7,18 @@
 
 ## Install
 
+- mkdir `build`
+
+- cd `build`
+
 ```
-cmake -Build
+cmake .. && cmake --build .
+```
+
+- Install as lib on system
+
+```
+sudo make install
 ```
 
 ## Run Tests
