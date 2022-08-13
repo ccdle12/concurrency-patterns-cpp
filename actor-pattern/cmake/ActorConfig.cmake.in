@@ -1,0 +1,10 @@
+get_filename_component(ACTOR_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+list(APPEND CMAKE_MODULE_PATH ${ACTOR_CMAKE_DIR})
+
+if(NOT TARGET Actor::Actor)
+    include("${ACTOR_CMAKE_DIR}/ActorTargets.cmake")
+endif()
+
+set(ACTOR_lIBRARIES Actor::Actor)
