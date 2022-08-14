@@ -35,8 +35,8 @@ public:
         // result/exception stored in a future.
         auto task_ptr = std::make_shared<std::packaged_task<decltype(f(args...))()>>(fn);
 
-        //  Create a lambda to create a generic void function, so that the all
-        //  the functions can be stored in a queue.
+        //  Create a lambda to create a generic void function, so that the function 
+        //  can be stored in the queue.
         std::function<void()> wrapper_fn = [task_ptr]() {
           (*task_ptr)();
         };
@@ -61,7 +61,7 @@ private:
     // Contains all the threads to receive a task for execution.
     std::vector<std::thread> m_threads;
 
-    // Mutex for m_queuem it contains all the tasks to be read and executed.
+    // Mutex for m_queue, it contains all the tasks to be read and executed.
     std::mutex m_queue_mutex;
     std::deque<std::function<void()>> m_queue;
 
