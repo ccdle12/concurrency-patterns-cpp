@@ -17,9 +17,8 @@ TEST(ThreadPool, Init) {
 
     ASSERT_EQ(future1.get(), 3);
 
-    // This is a test to that allows the caller to provide their own future
+    // This is a test that allows the caller to provide their own future
     // instead of receiving a future from the threadpool.
-    // lead to irregularities in results.
     auto task_ptr = std::make_shared<std::packaged_task<int()>>(std::bind(add, 5, 5));
     std::function<void()> wrapper_fn = [task_ptr]() {
       (*task_ptr)();
