@@ -50,3 +50,13 @@ void ThreadPool::ExecuteTasks()
         m_queue_cv.notify_one();
     }
 }
+
+void ThreadPool::Execute(std::function<void()> task)
+{
+    m_queue.push_front(task);
+
+    {
+        std::unique_lock<std::mutex> lock(m_queue_mutex);
+        m_queue_ready = true;
+    }
+}

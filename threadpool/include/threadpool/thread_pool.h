@@ -50,6 +50,12 @@ public:
 
         return task_ptr->get_future();
     }
+
+    // Accepts a void function without returning a future. The intention is to
+    // allow the caller to pass a void function that ALREADY has a future allocated
+    // by the caller.
+    void Execute(std::function<void()> task);
+
    
 private:
     // Contains all the threads to receive a task for execution.
