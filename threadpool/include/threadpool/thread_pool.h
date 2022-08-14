@@ -19,7 +19,7 @@ public:
     ~ThreadPool();
 
     // Returns the number of threads in the ThreadPool.
-    std::size_t Size();
+    std::size_t Size() const;
 
     // Accepts a function and it's args to be queued and executed on the thread
     // pool. A std::future is returned to the caller for handling.

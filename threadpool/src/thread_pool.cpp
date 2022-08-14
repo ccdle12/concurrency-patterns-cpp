@@ -22,7 +22,7 @@ ThreadPool::~ThreadPool()
     }
 }
 
-std::size_t ThreadPool::Size()
+std::size_t ThreadPool::Size() const
 {
     return m_threads.size();
 }
