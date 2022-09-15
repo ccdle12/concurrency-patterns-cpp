@@ -5,7 +5,7 @@ using namespace std::chrono_literals;
 
 ThreadPool::ThreadPool(const int num_threads) : m_shutdown{false}
 {
-    for (int i = 0; i < num_threads; i++) {
+    for (int i = 0; i < num_threads; ++i) {
         auto worker = std::thread(&ThreadPool::ExecuteTasks, this);
         m_threads.push_back(std::move(worker));
     }
