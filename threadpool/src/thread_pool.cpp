@@ -5,7 +5,7 @@ using namespace std::chrono_literals;
 
 ThreadPool::ThreadPool(const int num_threads) : m_shutdown{false}
 {
-    for (int i = 0; i < num_threads; i++) {
+    for (int i = 0; i < num_threads; ++i) {
         auto worker = std::thread(&ThreadPool::ExecuteTasks, this);
         m_threads.push_back(std::move(worker));
     }
@@ -22,7 +22,7 @@ ThreadPool::~ThreadPool()
     }
 }
 
-std::size_t ThreadPool::Size()
+std::size_t ThreadPool::Size() const
 {
     return m_threads.size();
 }
@@ -48,5 +48,15 @@ void ThreadPool::ExecuteTasks()
         // Explicitly free the lock before notifying another thread.
         lock.unlock();
         m_queue_cv.notify_one();
+    }
+}
+
+void ThreadPool::Execute(std::function<void()> task)
+{
+    m_queue.push_front(task);
+
+    {
+        std::unique_lock<std::mutex> lock(m_queue_mutex);
+        m_queue_ready = true;
     }
 }
