@@ -7,6 +7,10 @@ project(actor VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 # set(CMAKE_CXX_FLAGS -pthread)
 
+# TODO: Maybe make this switch according to the build required, prod, debug etc..
+# but it's required for gdb
+set(CMAKE_BUILD_TYPE Debug)
+
 ##############################################################################
 # Dependencies
 #
