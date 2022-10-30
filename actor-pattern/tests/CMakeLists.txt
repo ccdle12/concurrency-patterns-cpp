@@ -4,6 +4,8 @@ include(GoogleTest)
 add_executable(
     bin_test
     test_actor.cpp
+    test_scheduler.cpp
+    test_fixtures.h
 )
 
 # Link the bin with gtest.
@@ -15,6 +17,4 @@ target_link_libraries(
     GTest::gtest_main
 )
 
-include(GoogleTest)
 gtest_discover_tests(bin_test)
-

@@ -20,17 +20,22 @@ FetchContent_Declare(
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
+
+# Add the ThreadPool library
+find_package(ThreadPool 1.0 REQUIRED)
+
 ##############################################################################
 
-# Add the actor.cpp implementation file as a target.
 add_library(
     actor STATIC
     include/actor/actor.h
-    src/actor.cpp
+    include/actor/scheduler.h
+    src/scheduler.cpp
 )
 
 # This creates a namespace and alias for linking used in the cmake test file?
 add_library(Actor::actor ALIAS actor)
+target_link_libraries(actor ThreadPool::threadpool)
 
 # This includes the directories for compilation for the "actor" target.
 target_include_directories(actor 
@@ -66,7 +71,7 @@ install(TARGETS actor
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install the export target defined above, set the output .cmake file name for
-# the target, give it a namespace and the destination wiull be the the alias
+# the target, give it a namespace and the destination will be the the alias
 # of the  configdir.
 #
 # Callers and importing CMakefiles will use the ActorTargets.cmake file to
