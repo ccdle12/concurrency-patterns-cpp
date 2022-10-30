@@ -2,7 +2,6 @@
 #include<iostream>
 
 // TODO: No thread safety guarantees.
-/* void Scheduler::Register(Actor& actor) */
 void Scheduler::Register(std::vector<std::function<void()>>& actor_queue)
 {
     m_actors.push_back(actor_queue);

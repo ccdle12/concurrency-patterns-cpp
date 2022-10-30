@@ -21,7 +21,7 @@ public:
     Scheduler(const int num_threads): m_thread_pool{num_threads} {};
 
     // TODO: Register the actor and add the reference to a queue?
-    /* void Register(std::function<void()>& actor); */
+    // TODO: Maybe a shared ptr to a queue?
     void Register(std::vector<std::function<void()>>& actor_queue);
 
     // TODO: Comments
