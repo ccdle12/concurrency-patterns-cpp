@@ -6,6 +6,8 @@
 #include <functional>
 #include <vector>
 
+using fn_queue = std::vector<std::function<void()>>;
+
 /**
  * Base class for all Actors.
  *   - M is a generic for a MessageType
@@ -25,6 +27,11 @@ class Actor
         virtual void MsgRecv(M&& msg, Actor* sender = nullptr) = 0;
         virtual R MsgRecvWithResult(M msg, Actor* sender = nullptr) = 0;
 
+        Actor()
+        {
+            m_queue = std::make_shared<fn_queue>();
+        }
+
         /**
          * Schedule a task without expecting to return a response to the caller.
          * This will add callable (MsgRecv) to the work queue.
@@ -38,7 +45,7 @@ class Actor
             // execute the callable_fn.
             auto callable_fn = std::bind(&Actor::MsgRecv, this, std::move(msg), sender);
             std::function<void()> fn = [callable_fn]() { callable_fn; };
-            m_queue.push_back(fn);
+            m_queue->push_back(fn);
         }
 
         /**
@@ -68,7 +75,7 @@ class Actor
             std::function<void()> fn = [ptr]() {
               (*ptr)();
             };
-            m_queue.push_back(std::move(fn));
+            m_queue->push_back(std::move(fn));
 
             return future;
         }
@@ -78,14 +85,14 @@ class Actor
          */
         std::size_t Size() const
         {
-            return m_queue.size();
+            return m_queue->size();
         }
 
         /**
          * Contains all the calls to the actor in a queue, ready for execution
          * by some form of scheduler.
          */
-        std::vector<std::function<void()>> m_queue;
+        std::shared_ptr<fn_queue> m_queue;
 };
 
 #endif // ACTOR_H_

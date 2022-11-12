@@ -2,7 +2,7 @@
 #include<iostream>
 
 // TODO: No thread safety guarantees.
-void Scheduler::Register(std::vector<std::function<void()>>& actor_queue)
+void Scheduler::Register(std::shared_ptr<fn_queue> actor_queue)
 {
     m_actors.push_back(actor_queue);
 }
@@ -14,12 +14,8 @@ int Scheduler::QueueSize() const
 
 void Scheduler::Execute()
 {
-    // TODO:
-    // 1. Iterate on each actor.
     for (auto& queue : m_actors) {
-        auto fn = queue.get().back();
-        m_thread_pool.Execute(fn);
-        queue.get().pop_back();
+        m_thread_pool.Execute(queue->back());
+        queue->pop_back();
     }
-    // 2. Pop off each queue and exectue.
 }
