@@ -22,7 +22,7 @@ public:
 
     // TODO: Register the actor and add the reference to a queue?
     // TODO: Maybe a shared ptr to a queue?
-    void Register(std::vector<std::function<void()>>& actor_queue);
+    void Register(std::shared_ptr<fn_queue> actor_queue);
 
     // TODO: Comments
     int QueueSize() const;
@@ -37,9 +37,7 @@ private:
     ThreadPool m_thread_pool;
 
     // TODO: The Actor requires a template, so maybe reference a queue.
-    std::vector<
-        std::reference_wrapper<std::vector<std::function<void()>>>
-    > m_actors;
+    std::vector<std::shared_ptr<fn_queue>> m_actors;
 };
 
 #endif // SCHEDULER_H_
