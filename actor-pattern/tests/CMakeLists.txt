@@ -3,7 +3,9 @@ include(GoogleTest)
 # Add a test executable.
 add_executable(
     bin_test
-    test_thread_pool.cpp
+    test_actor.cpp
+    test_scheduler.cpp
+    test_fixtures.h
 )
 
 # Link the bin with gtest.
@@ -11,7 +13,7 @@ add_executable(
 # test.
 target_link_libraries(
     bin_test
-    ThreadPool::threadpool
+    Actor::actor
     GTest::gtest_main
 )
 

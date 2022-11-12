@@ -62,12 +62,12 @@ private:
     std::vector<std::thread> m_threads;
 
     // Mutex for m_queue, it contains all the tasks to be read and executed.
-    std::mutex m_queue_mutex;
+    mutable std::mutex m_queue_mutex;
     std::deque<std::function<void()>> m_queue;
 
     // Conditional variable and flag to notify waiting threads that the queue
     // is ready for work.
-    std::condition_variable m_queue_cv;
+    mutable std::condition_variable m_queue_cv;
     bool m_queue_ready;
 
     // Flag to identify whether the threads should stop working and tear down
