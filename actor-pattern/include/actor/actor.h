@@ -23,6 +23,8 @@ using fn_queue = std::vector<std::function<void()>>;
 template <typename M, typename R>
 class Actor
 {
+    using task = std::packaged_task<R()>;
+
     public:
         virtual void MsgRecv(M&& msg, Actor* sender = nullptr) = 0;
         virtual R MsgRecvWithResult(M msg, Actor* sender = nullptr) = 0;
@@ -62,7 +64,7 @@ class Actor
             // Create a shared pointer to a pacakged_task() (this creates an async function).
             // The async function (from pacakged_task()) is an async function that returns
             // R and has no parameters.
-            auto ptr = std::make_shared<std::packaged_task<R()>>(std::packaged_task<R()>(callable));
+            auto ptr = std::make_shared<task>(task(callable));
 
             // Follow the shared pointer and get the future from the async task.
             // This will be returned to the caller so that we may wait/block, poll or manage
