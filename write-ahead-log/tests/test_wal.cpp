@@ -21,9 +21,7 @@ TEST(WriteAheadLog, WriteAndRead)
     std::vector<wal::Entry> results = log.Read();
     for (int i = 0; i < input.size(); ++i)
     {
-        ASSERT_EQ(input[i].m_index, results[i].m_index);
-        ASSERT_EQ(input[i].m_data, results[i].m_data);
-        ASSERT_EQ(input[i].m_timestamp, results[i].m_timestamp);
+        ASSERT_EQ(input[i], results[i]);
     }
 
     std::remove(test_file.c_str());

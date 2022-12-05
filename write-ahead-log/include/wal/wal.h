@@ -52,6 +52,13 @@ class Entry
 
         return in;
     }
+
+    bool operator==(const Entry& entry) const
+    {
+        return (m_index == entry.m_index)
+            && (m_data == entry.m_data)
+            && (m_timestamp == entry.m_timestamp);
+    }
 };
 
 class WriteAheadLog
