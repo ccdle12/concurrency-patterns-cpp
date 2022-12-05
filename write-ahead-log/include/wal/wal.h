@@ -15,10 +15,11 @@ class Entry
   public:
     uint64_t m_index;
     std::string m_data;
+    uint64_t m_timestamp;
 
     Entry() = default;
-    explicit Entry(uint64_t index, std::string data) :
-        m_index{index}, m_data{data} {};
+    explicit Entry(uint64_t index, std::string data, uint64_t timestamp) :
+        m_index{index}, m_data{data}, m_timestamp{timestamp} {};
 
     friend std::ostream& operator<<(std::ostream& out, const Entry& entry)
     {
@@ -27,6 +28,8 @@ class Entry
         size_t len = entry.m_data.size();
         out.write(reinterpret_cast<const char*>(&len), sizeof(len));
         out.write(entry.m_data.c_str(), len);
+
+        out.write(reinterpret_cast<const char*>(&entry.m_timestamp), sizeof(entry.m_timestamp));
 
         return out;
     }
@@ -45,6 +48,8 @@ class Entry
         entry.m_data = std::string{data};
         delete []data;
 
+        in.read(reinterpret_cast<char*>(&entry.m_timestamp), sizeof(entry.m_timestamp));
+
         return in;
     }
 };
@@ -58,6 +63,7 @@ class WriteAheadLog
 
   public:
     WriteAheadLog(const std::string& file);
+
     void Write(const Entry& entry);
     std::vector<Entry> Read();
   };

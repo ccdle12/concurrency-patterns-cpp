@@ -10,9 +10,9 @@ TEST(WriteAheadLog, WriteAndRead)
 
     std::vector<wal::Entry> input
     {
-        wal::Entry{5, "Hello, World"},
-        wal::Entry{7, "Set(Foo)"},
-        wal::Entry{8, "Get(Bar)"},
+        wal::Entry{5, "Hello, World", 1670272110},
+        wal::Entry{7, "Set(Foo)", 1670272111},
+        wal::Entry{8, "Get(Bar)", 1670272112},
     };
 
     for (const auto& entry : input)
@@ -23,6 +23,7 @@ TEST(WriteAheadLog, WriteAndRead)
     {
         ASSERT_EQ(input[i].m_index, results[i].m_index);
         ASSERT_EQ(input[i].m_data, results[i].m_data);
+        ASSERT_EQ(input[i].m_timestamp, results[i].m_timestamp);
     }
 
     std::remove(test_file.c_str());
