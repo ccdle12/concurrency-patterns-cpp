@@ -1,6 +1,6 @@
 # Concurreny Patterns
 
-This repo contains separate libaries used to compose different concurrent Patterns
+This repo contains seperate libraries used to compose different concurrent Patterns
 and related examples.
 
 ## Run Tests
