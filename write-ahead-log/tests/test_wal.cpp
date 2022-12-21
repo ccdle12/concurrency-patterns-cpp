@@ -19,6 +19,7 @@ TEST(WriteAheadLog, WriteAndRead)
         log.Write(entry);
 
     std::vector<wal::Entry> results = log.Read();
+    ASSERT_EQ(results.size(), input.size());
     for (int i = 0; i < input.size(); ++i)
     {
         ASSERT_EQ(input[i], results[i]);

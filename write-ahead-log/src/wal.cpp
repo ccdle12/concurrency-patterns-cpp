@@ -35,7 +35,7 @@ std::vector<Entry> WriteAheadLog::Read()
         Entry entry;
         m_log_file >> entry;
 
-        entries.push_back(entry);
+        entries.push_back(std::move(entry));
     }
 
     return entries;

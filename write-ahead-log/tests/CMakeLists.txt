@@ -5,6 +5,7 @@ include(GoogleTest)
 add_executable(
     bin_wal
     test_wal.cpp
+    test_fixtures.h
 )
 
 # Link the bin with gtest.

@@ -1,10 +1,4 @@
-// TODO:
 // https://martinfowler.com/articles/patterns-of-distributed-systems/wal.html
-//
-// 1. What should the log format be?
-// 2. Input is a fd
-// 3. Open fd
-// 4. Write, what is the flushing strategy?
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -41,12 +35,10 @@ class Entry
         size_t len;
         in.read(reinterpret_cast<char*>(&len), sizeof(len));
 
-        // TODO: I want to remove the manual allocation and deallocation.
-        char* data = new char[len];
-        in.read(data, len);
-
-        entry.m_data = std::string{data};
-        delete []data;
+        std::vector<char> buf;
+        buf.reserve(len);
+        in.read(&buf[0], len);
+        entry.m_data = std::string{buf.data()};
 
         in.read(reinterpret_cast<char*>(&entry.m_timestamp), sizeof(entry.m_timestamp));
 
