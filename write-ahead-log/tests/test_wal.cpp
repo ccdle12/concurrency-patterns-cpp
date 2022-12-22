@@ -2,10 +2,11 @@
 #include <iostream>
 #include <vector>
 #include "wal/wal.h"
+#include "test_fixtures.h"
 
 TEST(WriteAheadLog, WriteAndRead)
 {
-    std::string test_file{"./test.dat"};
+    std::string test_file{"./test000.dat"};
     wal::WriteAheadLog log{test_file};
 
     std::vector<wal::Entry> input
@@ -24,6 +25,26 @@ TEST(WriteAheadLog, WriteAndRead)
     {
         ASSERT_EQ(input[i], results[i]);
     }
+
+    std::remove(test_file.c_str());
+}
+
+TEST(WriteAheadLog, KVStore)
+{
+    std::string test_file{"./test001.dat"};
+
+    {
+        KVStore kv{test_file};
+        kv.Put("foo", "bar");
+
+        auto bar = kv.Get("foo");
+        ASSERT_EQ(bar, "bar");
+    }
+
+    // Should be able to rebuild the in-memory cache from the log file.
+    KVStore kv{test_file};
+    auto bar = kv.Get("foo");
+    ASSERT_EQ(bar, "bar");
 
     std::remove(test_file.c_str());
 }

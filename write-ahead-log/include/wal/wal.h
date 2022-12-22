@@ -1,3 +1,6 @@
+#ifndef WAL_H
+#define WAL_H
+
 // https://martinfowler.com/articles/patterns-of-distributed-systems/wal.html
 #include <fstream>
 #include <iostream>
@@ -61,9 +64,12 @@ class WriteAheadLog
     void assert_file_open() const;
 
   public:
+    WriteAheadLog() = default;
     WriteAheadLog(const std::string& file);
 
     void Write(const Entry& entry);
     std::vector<Entry> Read();
   };
 }
+
+#endif
