@@ -34,17 +34,17 @@ TEST(WriteAheadLog, KVStore)
     std::string test_file{"./test001.dat"};
 
     {
-        KVStore kv{test_file};
-        kv.Put("foo", "bar");
+        KVStore<std::string, int> kv{test_file};
+        kv.Put("foo", 1);
 
         auto bar = kv.Get("foo");
-        ASSERT_EQ(bar, "bar");
+        ASSERT_EQ(bar, 1);
     }
 
     // Should be able to rebuild the in-memory cache from the log file.
-    KVStore kv{test_file};
+    KVStore<std::string, int> kv{test_file};
     auto bar = kv.Get("foo");
-    ASSERT_EQ(bar, "bar");
+    ASSERT_EQ(bar, 1);
 
     std::remove(test_file.c_str());
 }

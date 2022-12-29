@@ -1,9 +1,10 @@
 #include "wal/wal.h"
 
+template<typename K, typename V>
 class KVStore : public wal::WriteAheadLog
 {
   private:
-      std::map<std::string, std::string> m_cache;
+      std::map<K, V> m_cache;
 
   public:
       KVStore(const std::string& filename) : wal::WriteAheadLog(filename)
@@ -16,11 +17,15 @@ class KVStore : public wal::WriteAheadLog
               auto value = data.substr(entry.m_data.find(",") + 2, data.find(")"));
               value = data.substr(data.find(value), value.size() - 1);
 
-              m_cache.emplace(key, value);
+              std::istringstream ss(value);
+              V converted_value;
+              ss >> converted_value;
+
+              m_cache.emplace(key, converted_value);
           }
       };
 
-      void Put(const std::string& key, const std::string& value)
+      void Put(const K& key, const V& value)
       {
            std::ostringstream cmd;
            cmd << "Set(" << key << ", " << value << ")";
@@ -31,7 +36,7 @@ class KVStore : public wal::WriteAheadLog
            m_cache.emplace(key, value);
       }
 
-      std::string Get(const std::string& key) const
+      V Get(const K& key) const
       {
           return m_cache.at(key);
       }
