@@ -1,17 +1,14 @@
 #include "wal/wal.h"
 
-class KVStore
+class KVStore : public wal::WriteAheadLog
 {
   private:
-      wal::WriteAheadLog m_log;
       std::map<std::string, std::string> m_cache;
 
   public:
-      KVStore(const std::string& filename)
+      KVStore(const std::string& filename) : wal::WriteAheadLog(filename)
       {
-          m_log = wal::WriteAheadLog{filename};
-
-          for (const auto& entry : m_log.Read())
+          for (const auto& entry : Read())
           {
               const auto& data = entry.m_data;
 
@@ -23,13 +20,13 @@ class KVStore
           }
       };
 
-      void Put(std::string key, std::string value)
+      void Put(const std::string& key, const std::string& value)
       {
            std::ostringstream cmd;
            cmd << "Set(" << key << ", " << value << ")";
 
            // TODO: Time now.
-           m_log.Write(wal::Entry(m_cache.size(), cmd.str(), 1670272110));
+           Write(wal::Entry(m_cache.size(), cmd.str(), 1670272110));
 
            m_cache.emplace(key, value);
       }
