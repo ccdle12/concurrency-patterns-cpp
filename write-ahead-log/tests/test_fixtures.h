@@ -1,17 +1,15 @@
 #include "wal/wal.h"
 
-class KVStore
+template<typename K, typename V>
+class KVStore : public wal::WriteAheadLog
 {
   private:
-      wal::WriteAheadLog m_log;
-      std::map<std::string, std::string> m_cache;
+      std::map<K, V> m_cache;
 
   public:
-      KVStore(const std::string& filename)
+      KVStore(const std::string& filename) : wal::WriteAheadLog(filename)
       {
-          m_log = wal::WriteAheadLog{filename};
-
-          for (const auto& entry : m_log.Read())
+          for (const auto& entry : Read())
           {
               const auto& data = entry.m_data;
 
@@ -19,22 +17,26 @@ class KVStore
               auto value = data.substr(entry.m_data.find(",") + 2, data.find(")"));
               value = data.substr(data.find(value), value.size() - 1);
 
-              m_cache.emplace(key, value);
+              std::istringstream ss(value);
+              V converted_value;
+              ss >> converted_value;
+
+              m_cache.emplace(key, converted_value);
           }
       };
 
-      void Put(std::string key, std::string value)
+      void Put(const K& key, const V& value)
       {
            std::ostringstream cmd;
            cmd << "Set(" << key << ", " << value << ")";
 
            // TODO: Time now.
-           m_log.Write(wal::Entry(m_cache.size(), cmd.str(), 1670272110));
+           Write(wal::Entry(m_cache.size(), cmd.str(), 1670272110));
 
            m_cache.emplace(key, value);
       }
 
-      std::string Get(const std::string& key) const
+      V Get(const K& key) const
       {
           return m_cache.at(key);
       }

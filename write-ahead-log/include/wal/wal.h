@@ -56,7 +56,15 @@ class Entry
     }
 };
 
-class WriteAheadLog
+class IWAL
+{
+public:
+    virtual void Write(const Entry& entry) = 0;
+    virtual std::vector<Entry> Read() = 0;
+    virtual ~IWAL() = default;
+};
+
+class WriteAheadLog : public IWAL
 {
   private:
     // TODO: Add a mutex
@@ -65,6 +73,7 @@ class WriteAheadLog
 
   public:
     WriteAheadLog() = default;
+    ~WriteAheadLog() override = default;
     WriteAheadLog(const std::string& file);
 
     void Write(const Entry& entry);
