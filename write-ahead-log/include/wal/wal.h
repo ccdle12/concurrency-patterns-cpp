@@ -76,8 +76,8 @@ class WriteAheadLog : public IWAL
     ~WriteAheadLog() override = default;
     WriteAheadLog(const std::string& file);
 
-    void Write(const Entry& entry);
-    std::vector<Entry> Read();
+    void Write(const Entry& entry) override;
+    std::vector<Entry> Read() override;
   };
 }
 

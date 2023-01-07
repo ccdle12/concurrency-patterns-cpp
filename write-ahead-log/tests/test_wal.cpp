@@ -7,7 +7,9 @@
 TEST(WriteAheadLog, WriteAndRead)
 {
     std::string test_file{"./test000.dat"};
-    wal::WriteAheadLog log{test_file};
+
+    // Check that we can create a ptr and use the IWAL interface.
+    std::unique_ptr<wal::IWAL> log = std::make_unique<wal::WriteAheadLog>(test_file);
 
     std::vector<wal::Entry> input
     {
@@ -17,9 +19,9 @@ TEST(WriteAheadLog, WriteAndRead)
     };
 
     for (const auto& entry : input)
-        log.Write(entry);
+        log->Write(entry);
 
-    std::vector<wal::Entry> results = log.Read();
+    auto results = log->Read();
     ASSERT_EQ(results.size(), input.size());
     for (int i = 0; i < input.size(); ++i)
     {
