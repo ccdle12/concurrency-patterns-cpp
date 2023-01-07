@@ -2,14 +2,18 @@
 #include <iostream>
 #include <vector>
 #include "wal/wal.h"
+#include <filesystem>
 #include "test_fixtures.h"
+
+namespace fs = std::filesystem;
+
+// Test folder for the WAL. The folder should be deleted at the end of each test.
+const std::string test_folder{"./test-log"};
 
 TEST(WriteAheadLog, WriteAndRead)
 {
-    std::string test_file{"./test000.dat"};
-
     // Check that we can create a ptr and use the IWAL interface.
-    std::unique_ptr<wal::IWAL> log = std::make_unique<wal::WriteAheadLog>(test_file);
+    std::unique_ptr<wal::IWAL> log = std::make_unique<wal::WriteAheadLog>(test_folder);
 
     std::vector<wal::Entry> input
     {
@@ -28,15 +32,13 @@ TEST(WriteAheadLog, WriteAndRead)
         ASSERT_EQ(input[i], results[i]);
     }
 
-    std::remove(test_file.c_str());
+    fs::remove_all(test_folder);
 }
 
 TEST(WriteAheadLog, KVStore)
 {
-    std::string test_file{"./test001.dat"};
-
     {
-        KVStore<std::string, int> kv{test_file};
+        KVStore<std::string, int> kv{test_folder};
         kv.Put("foo", 1);
 
         auto bar = kv.Get("foo");
@@ -44,9 +46,9 @@ TEST(WriteAheadLog, KVStore)
     }
 
     // Should be able to rebuild the in-memory cache from the log file.
-    KVStore<std::string, int> kv{test_file};
+    KVStore<std::string, int> kv{test_folder};
     auto bar = kv.Get("foo");
     ASSERT_EQ(bar, 1);
 
-    std::remove(test_file.c_str());
+    fs::remove_all(test_folder);
 }
