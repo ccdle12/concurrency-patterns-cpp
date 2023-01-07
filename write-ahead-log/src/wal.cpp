@@ -1,6 +1,8 @@
 #include "wal/wal.h"
+#include <filesystem>
 
 using namespace wal;
+namespace fs = std::filesystem;
 
 void WriteAheadLog::assert_file_open() const
 {
