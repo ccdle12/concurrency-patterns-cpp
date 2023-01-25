@@ -15,11 +15,16 @@ TEST(WriteAheadLog, WriteAndRead)
     // Check that we can create a ptr and use the IWAL interface.
     std::unique_ptr<wal::IWAL> log = std::make_unique<wal::WriteAheadLog>(test_folder);
 
+    // TODO: The default max segment size is 3, so we need to add 6 entries to
+    // flush to 2 log files.
     std::vector<wal::Entry> input
     {
         wal::Entry{5, "Hello, World", 1670272110},
         wal::Entry{7, "Set(Foo)", 1670272111},
         wal::Entry{8, "Get(Bar)", 1670272112},
+        wal::Entry{9, "Get(AGAIN1)", 1670272113},
+        wal::Entry{9, "Get(AGAIN2)", 1670272113},
+        wal::Entry{9, "Get(AGAIN3)", 1670272113},
     };
 
     for (const auto& entry : input)
@@ -40,6 +45,8 @@ TEST(WriteAheadLog, KVStore)
     {
         KVStore<std::string, int> kv{test_folder};
         kv.Put("foo", 1);
+        kv.Put("foo2", 2);
+        kv.Put("foo3", 3);
 
         auto bar = kv.Get("foo");
         ASSERT_EQ(bar, 1);
