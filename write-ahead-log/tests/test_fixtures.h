@@ -1,15 +1,16 @@
 #include "wal/wal.h"
 
 template<typename K, typename V>
-class KVStore : public wal::WriteAheadLog
+class KVStore
 {
   private:
+      std::unique_ptr<wal::IWAL> m_log;
       std::map<K, V> m_cache;
 
-  public:
-      KVStore(const std::string& filename) : wal::WriteAheadLog(filename)
+      std::map<K, V> unpack_log(const std::unique_ptr<wal::IWAL>& log) const
       {
-          for (const auto& entry : Read())
+          std::map<K, V> cache;
+          for (const auto& entry : m_log->Read())
           {
               const auto& data = entry.m_data;
 
@@ -21,8 +22,17 @@ class KVStore : public wal::WriteAheadLog
               V converted_value;
               ss >> converted_value;
 
-              m_cache.emplace(key, converted_value);
+              cache.emplace(key, converted_value);
           }
+
+          return cache;
+      }
+
+  public:
+      KVStore(std::unique_ptr<wal::IWAL>&& log)
+      {
+          m_log = std::move(log);
+          m_cache = unpack_log(m_log);
       };
 
       void Put(const K& key, const V& value)
@@ -31,7 +41,7 @@ class KVStore : public wal::WriteAheadLog
            cmd << "Set(" << key << ", " << value << ")";
 
            // TODO: Time now.
-           Write(wal::Entry(m_cache.size(), cmd.str(), 1670272110));
+           m_log->Write(wal::Entry(m_cache.size(), cmd.str(), 1670272110));
 
            m_cache.emplace(key, value);
       }
